@@ -12,6 +12,6 @@ module.exports = app => {
     router.put("/contacts/:contactId", contacts.update);
   
     router.delete("/contacts/:contactId", contacts.delete);
-  
+    
     app.use('/api', router);
 };

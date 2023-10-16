@@ -12,6 +12,8 @@ module.exports = app => {
     router.put("/contacts/:contactId/phones/:phoneId", phones.update);
   
     router.delete("/contacts/:contactId/phones/:phoneId", phones.delete);
-  
+    
+    router.get("/phones", phones.findAllPhones); // Define a function findAllPhones in your phone.controller.js
+
     app.use('/api', router);
 };
