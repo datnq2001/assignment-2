@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
+import './Phone.css';
 
 function Phone(props) {
   const { contact, render, setRender } = props;
   const [name, setName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [phones, setPhones] = useState([]);
+  const [showImage, setShowImage] = useState(false); // State for image overlay
 
   const host = "http://localhost:5000/api";
 
@@ -34,6 +36,10 @@ function Phone(props) {
     })
       .then(() => {
         setRender(!render);
+        setShowImage(true); // Show the image overlay
+        setTimeout(() => {
+          setShowImage(false); // Hide the image after 5 seconds
+        }, 5000);
       })
       .catch((error) => console.error("Error deleting phone:", error));
   };
@@ -69,15 +75,21 @@ function Phone(props) {
           type="text"
           placeholder="Phone Number"
         />
-        <button onClick={() => handleAddPhone(contact.id)} className="ms-1 px-2 rounded bg-green-500">Add</button>
+        <button
+          onClick={() => handleAddPhone(contact.id)}
+          className="ms-1 px-2 rounded bg-green-500"
+          style={{ backgroundColor: "#52D452" }}
+        >
+          Add
+        </button>
       </div>
-      <div className="mt-2">
+      <div className="mt-2" style={{ backgroundColor: "#C7CEEA" }}>
         <div className="flex">
           <div className="w-5/12 border-[1px] border-black">
-            <div className="ms-2 my-1">Name</div>
+            <div className="ms-2 my-1 font-semibold">Name</div>
           </div>
           <div className="w-5/12 border-[1px] border-black">
-            <div className="ms-2 my-1">Number</div>
+            <div className="ms-2 my-1 font-semibold">Number</div>
           </div>
           <div className="w-2/12 border-[1px] border-black">
             <div className="ms-2 my-1"></div>
@@ -92,11 +104,23 @@ function Phone(props) {
               <div className="my-1 ms-2">{phone.phoneNumber}</div>
             </div>
             <div className="flex justify-center w-2/12 border-[1px] border-black">
-              <button onClick={() => handleDelete(contact.id, phone.id)} className="bg-red-500 px-1 my-1 rounded-sm">Delete</button>
+              <button
+                onClick={() => handleDelete(contact.id, phone.id)}
+                className="bg-red-500 px-1 my-1 rounded-sm"
+                style={{ backgroundColor: "#FF6961" }}
+              >
+                Delete
+              </button>
             </div>
           </div>
         ))}
       </div>
+      {/* Conditional rendering for the image overlay */}
+      {showImage && (
+        <div className="image-overlay">
+          <img src="https://media.giphy.com/media/O2urDYbZDYMnoHUdUR/giphy.gif" alt="GIF" width="250" height="250" />
+        </div>
+      )}
     </div>
   );
 }

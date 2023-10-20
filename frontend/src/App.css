@@ -1,0 +1,22 @@
+/* CSS for swipe-up image */
+.swipe-up {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 999;
+    cursor: pointer;
+  }
+  
+  /* CSS for swipe-up text */
+  .swipe-up-text {
+    position: fixed;
+    bottom: 20px;
+    right: 40px;
+    z-index: 999;
+    cursor: pointer;
+    color: #FFFFFF;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 5px 10px;
+    border-radius: 5px;
+  }
+  

@@ -86,19 +86,53 @@ exports.update = (req, res) => {
     });
 };
 
-// Delete a contact by ID
+// Delete a contact by ID, and also delete associated phones
 exports.delete = (req, res) => {
   const contactId = req.params.contactId;
 
-  Contacts.destroy({
-    where: { id: contactId },
-  })
-    .then((num) => {
-      if (num === 1) {
-        res.send({ message: "Contact was deleted successfully." });
-      } else {
-        res.status(404).send({ message: "Contact not found" });
+  // First, find the contact by ID
+  Contacts.findByPk(contactId)
+    .then((contact) => {
+      if (!contact) {
+        return res.status(404).send({ message: "Contact not found" });
       }
+
+      // Find all phones associated with the contact
+      Phones.findAll({
+        where: { contactId },
+      })
+        .then((phones) => {
+          // Delete each phone
+          const phoneDeletePromises = phones.map((phone) => {
+            return phone.destroy();
+          });
+
+          // Use Promise.all to delete all phones
+          Promise.all(phoneDeletePromises)
+            .then(() => {
+              // After deleting all phones, delete the contact
+              contact
+                .destroy()
+                .then(() => {
+                  res.send({ message: "Contact and associated phones were deleted successfully." });
+                })
+                .catch((err) => {
+                  res.status(500).send({
+                    message: err.message || "Some error occurred while deleting the contact.",
+                  });
+                });
+            })
+            .catch((err) => {
+              res.status(500).send({
+                message: err.message || "Some error occurred while deleting associated phones.",
+              });
+            });
+        })
+        .catch((err) => {
+          res.status(500).send({
+            message: err.message || "Some error occurred while retrieving associated phones.",
+          });
+        });
     })
     .catch((err) => {
       res.status(500).send({
@@ -106,3 +140,4 @@ exports.delete = (req, res) => {
       });
     });
 };
+
